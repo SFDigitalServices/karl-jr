@@ -5,6 +5,10 @@ import { Button } from "@/sidepanel/components/Button.tsx";
 import { Card } from "@/sidepanel/components/Card.tsx";
 import { trackEvent } from "@/lib/analytics";
 
+// Airtable base holding feedback records; used to build record deep-links.  The
+// per-record table ID comes from the record itself (record.airtableTableId).
+const AIRTABLE_BASE_ID = "appo4SjothLkSxmbG";
+
 interface FeedbackCardProps {
 	pagePath: string;
 }
@@ -67,6 +71,14 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ record }) => {
 				</div>
 			)}
 
+			{/* what was difficult (if not helpful) */}
+			{record.wasHelpful === "no" && record.whatWasDifficult && (
+				<div className="text-sm mb-2">
+					<span className="font-medium text-gray-700">What was difficult: </span>
+					<span className="text-gray-900">{record.whatWasDifficult}</span>
+				</div>
+			)}
+
 			{/* additional details */}
 			{record.additionalDetails && (
 				<div className="text-sm mb-2">
@@ -75,18 +87,23 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ record }) => {
 				</div>
 			)}
 
-			{/* submission ID (small, at bottom) */}
+			{/* submission ID (small, at bottom) -- deep-links to the record in its
+			    source table when the table ID is known, otherwise shown as plain text */}
 			<div className="text-xs text-gray-400 mt-2">
 				ID:{" "}
-				<a
-					href={`https://airtable.com/appo4SjothLkSxmbG/tblbhivrMRm5X8eSU/viwgRjwYR6z9CsRc2/${record.id}`}
-					target="_blank"
-					rel="noopener noreferrer"
-					title=""
-					className="text-gray-400 no-underline cursor-default"
-				>
-					{record.submissionId}
-				</a>
+				{record.airtableTableId ? (
+					<a
+						href={`https://airtable.com/${AIRTABLE_BASE_ID}/${record.airtableTableId}/${record.id}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						title="Open this record in Airtable"
+						className="text-gray-400 no-underline cursor-default"
+					>
+						{record.submissionId}
+					</a>
+				) : (
+					<span className="text-gray-400">{record.submissionId}</span>
+				)}
 			</div>
 		</div>
 	);

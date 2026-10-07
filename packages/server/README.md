@@ -20,7 +20,13 @@ Create a `.env` file in the repository root with the following variables:
 WAGTAIL_API_URL=https://api.sf.gov/admin/api/v2
 AIRTABLE_API_KEY=your_airtable_api_key
 AIRTABLE_BASE_ID=your_airtable_base_id
+# current table receiving feedback (e.g. "Karl Fillout Data")
 AIRTABLE_TABLE_NAME=your_table_name
+# optional: older table to also read from and merge (e.g. "Karl data")
+AIRTABLE_TABLE_NAME_LEGACY=your_legacy_table_name
+# optional: table IDs (tbl...) for record deep-links; default to known values
+# AIRTABLE_TABLE_ID=tblpk25gxXFi7bamZ
+# AIRTABLE_TABLE_ID_LEGACY=tblbhivrMRm5X8eSU
 ```
 
 **Token Authentication (Required):**
@@ -156,7 +162,11 @@ Set the following environment variables in your Vercel project settings:
 - `WAGTAIL_API_URL`
 - `AIRTABLE_API_KEY`
 - `AIRTABLE_BASE_ID`
-- `AIRTABLE_TABLE_NAME`
+- `AIRTABLE_TABLE_NAME` - current table receiving feedback (e.g. "Karl Fillout Data")
+
+**Optional:**
+- `AIRTABLE_TABLE_NAME_LEGACY` - an older feedback table (e.g. "Karl data"). When set, the feedback endpoint reads from both tables and merges the results so historical feedback keeps displaying. Leave unset to read only from `AIRTABLE_TABLE_NAME`.
+- `AIRTABLE_TABLE_ID` / `AIRTABLE_TABLE_ID_LEGACY` - Airtable table IDs (`tbl...`) used to deep-link each feedback record to its own source table in the side panel. These default to the known table IDs for the feedback base, so you only need to set them if the tables change.
 
 **Automatically Set by Vercel (when Upstash Redis is connected):**
 - `UPSTASH_REDIS_REST_URL`
