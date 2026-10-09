@@ -14,6 +14,10 @@ export interface FeedbackRecord {
 	issueCategory: string | null;
 	whatWasHelpful: string | null;
 	additionalDetails: string | null;
+	whatWasDifficult: string | null;
+	// Airtable table ID this record came from, used to build a deep-link to the
+	// correct table.  Null when the source table's ID is not configured.
+	airtableTableId: string | null;
 }
 
 /**
@@ -45,6 +49,13 @@ export interface AirtableResponse {
 
 /**
  * Individual record from Airtable API
+ *
+ * Feedback is spread across two tables that share the key fields
+ * (submission_id, submission_created, referrer, wasTheLastPageYouViewedHelpful)
+ * but differ in how the free-text columns are named:
+ * - "Karl data" (legacy): whatWasWrongWithThePage1, whatWasHelpful, shareMoreDetails
+ * - "Karl Fillout Data" (current): WhatWasWrong, WhatWasHelpful, ShareMoreDetails, WhatWasDifficult
+ * All variant columns are optional so a single type can represent rows from either table.
  */
 export interface AirtableRecord {
 	id: string;
@@ -53,9 +64,15 @@ export interface AirtableRecord {
 		submission_created: string;
 		referrer: string;
 		wasTheLastPageYouViewedHelpful?: "yes" | "no";
+		// legacy "Karl data" column names
 		whatWasWrongWithThePage1?: string;
 		whatWasHelpful?: string;
 		shareMoreDetails?: string;
+		// current "Karl Fillout Data" column names
+		WhatWasWrong?: string;
+		WhatWasHelpful?: string;
+		ShareMoreDetails?: string;
+		WhatWasDifficult?: string;
 	};
 	createdTime: string;
 }
